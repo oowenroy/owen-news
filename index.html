@@ -88,7 +88,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font
 </style>
 </head>
 <body>
-
 <div class="top">
   <div class="tl">
     <div class="live"><div class="dot"></div>Live</div>
@@ -103,9 +102,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font
     <div class="clk"><div class="ct" id="ct">—</div><div class="cd" id="cd">—</div></div>
   </div>
 </div>
-
 <div class="ticker"><div class="ti"><div class="tt" id="tt"><span>Loading headlines…</span><span>Loading headlines…</span></div></div></div>
-
 <div class="layout">
   <div class="feed">
     <div class="fi">
@@ -117,7 +114,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font
       <div id="slist"></div>
     </div>
   </div>
-
   <div class="sbw">
     <div class="cats">
       <button class="ctab on" onclick="fcat(this,'all')">All</button>
@@ -135,12 +131,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font
     </div>
   </div>
 </div>
-
 <div class="greet"><div class="g1" id="g1">Good morning,</div><div class="g2">Owen.</div></div>
-
 <script>
 var stories=[],filter='all';
-
 function tick(){
   var n=new Date(),h=n.getHours(),m=String(n.getMinutes()).padStart(2,'0'),s=String(n.getSeconds()).padStart(2,'0'),ap=h>=12?'PM':'AM';
   h=h%12||12;
@@ -151,7 +144,6 @@ function tick(){
   document.getElementById('g1').textContent=hr>=5&&hr<12?'Good morning,':hr>=12&&hr<17?'Good afternoon,':hr>=17&&hr<21?'Good evening,':'Good night,';
 }
 setInterval(tick,1000);tick();
-
 async function wx(){
   try{
     var r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=42.3601&longitude=-71.0589&current=temperature_2m,weathercode&temperature_unit=fahrenheit&timezone=America%2FNew_York'),d=await r.json(),c=d.current;
@@ -163,13 +155,11 @@ async function wx(){
   }catch(e){}
 }
 wx();setInterval(wx,600000);
-
 async function callAPI(prompt){
   var r=await fetch('/api/news',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
   var d=await r.json();
   return JSON.parse((d.content&&d.content[0]&&d.content[0].text||'{}').replace(/```json|```/g,'').trim());
 }
-
 function renderHero(h){
   document.getElementById('hcat').textContent=h.category||'';
   document.getElementById('hsrc').textContent=h.source||'';
@@ -178,7 +168,6 @@ function renderHero(h){
   t.textContent=h.title||'';t.href=h.url||'#';
   document.getElementById('hsum').textContent=h.summary||'';
 }
-
 function paintStories(){
   var show=filter==='all'?stories:stories.filter(function(s){return(s.category||'').toLowerCase()===filter;});
   document.getElementById('slist').innerHTML=show.map(function(s,i){
@@ -189,7 +178,6 @@ function paintStories(){
     '<span class="sarr">↗</span></a>';
   }).join('');
 }
-
 function renderTrending(t){
   var n=new Date(),h=n.getHours()%12||12;
   document.getElementById('trtm').textContent=h+':'+String(n.getMinutes()).padStart(2,'0')+' '+(n.getHours()>=12?'PM':'AM');
@@ -199,7 +187,6 @@ function renderTrending(t){
     '<div><div class="th">'+(x.headline||'')+'</div><div class="tsrc">'+(x.source||'')+'</div></div></a>';
   }).join('');
 }
-
 function renderAlerts(a){
   if(!a||!a.length){document.getElementById('alerts').innerHTML='<div style="font-size:10px;color:#bbb;font-style:italic;font-weight:300;">No urgent alerts.</div>';return;}
   document.getElementById('alerts').innerHTML=a.map(function(x){
@@ -207,17 +194,14 @@ function renderAlerts(a){
     '<div class="atxt">'+(x.text||'')+'</div><div class="atm">'+(x.time||'')+'</div></a>';
   }).join('');
 }
-
 function renderTicker(items){
   var d=items.concat(items);
   document.getElementById('tt').innerHTML=d.map(function(t){return '<span>'+t+'</span>';}).join('');
 }
-
 function fcat(btn,cat){
   document.querySelectorAll('.ctab').forEach(function(b){b.classList.remove('on');});
   btn.classList.add('on');filter=cat;paintStories();
 }
-
 async function doRefresh(){
   var btn=document.getElementById('rfbtn');
   btn.classList.add('spin');
@@ -235,7 +219,6 @@ async function doRefresh(){
   }catch(e){document.getElementById('stat').textContent='Error — try refresh';console.error(e);}
   btn.classList.remove('spin');
 }
-
 doRefresh();
 setInterval(doRefresh,300000);
 setInterval(async function(){
